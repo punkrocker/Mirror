@@ -1,5 +1,8 @@
 from aip import AipSpeech
 import appkey
+from pydub import AudioSegment
+from pydub.playback import play
+import io
 
 
 class Speech:
@@ -8,13 +11,10 @@ class Speech:
 
     def makeMp3(self, content):
         result = self.client.synthesis(content, 'zh', 1, {'spd': 0, 'vol': 5, 'per': 3})
-        # 识别正确返回语音二进制 错误则返回dict 参照下面错误码
-        filename = 'test'
-        if not isinstance(result, dict):
-            with open('文件的保存路径' + filename + '.mp3', 'wb') as f:
-                f.write(result)
+        song = AudioSegment.from_file(io.BytesIO(result), format="mp3")
+        play(song)
 
 
 if __name__ == '__main__':
     speech = Speech()
-    speech.makeMp3("哈哈哈哈哈")
+    speech.makeMp3("Hello,I'm Angle")
