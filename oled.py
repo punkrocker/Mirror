@@ -5,18 +5,18 @@ from PIL import ImageFont
 import time
 
 
-def stats(oled):
+def stats(oled, content):
     font = ImageFont.load_default()
     with canvas(oled) as draw:
-        localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        draw.text((2, 5), localtime, font=font, fill=255)
+        draw.text((2, 5), content, font=font, fill=255)
 
 
 def main():
     serial = i2c(port=1, address=0x3C)
     oled = sh1106(serial)
     while True:
-        stats(oled)
+        localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        stats(oled, localtime)
         time.sleep(1)
 
 
