@@ -19,7 +19,7 @@ def format_mac(mac):
         raise ValueError('Incorrect MAC format')
 
 
-def create_magic_packet0(mac):
+def create_magic_packet(mac):
     data = b'FF' * 6 + (mac * 16).encode()
     print(data)
 

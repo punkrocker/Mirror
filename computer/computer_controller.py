@@ -1,7 +1,6 @@
 import wake_up
 
-mac = '98:90:96:C1:FE:CB'
-
+mac = '70:5A:0F:4D:12:F5'
 
 def boot_computer(mac):
     try:
