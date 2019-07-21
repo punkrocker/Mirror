@@ -9,22 +9,22 @@ Display the Raspberry Pi logo (loads image as .png).
 """
 
 import os.path
-from PIL import Image
+from PIL import Image, ImageOps
 from oled_setting import get_device
 
 
 def main():
     img_path = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                            'images', 'pi_logo.png'))
+                                            '../imgs', 'home.png'))
     logo = Image.open(img_path).convert("RGBA")
+    logo = ImageOps.invert(logo)
     fff = Image.new(logo.mode, logo.size, (255,) * 4)
 
-    background = Image.new("RGBA", device.size, "white")
+    background = Image.new("RGBA", device.size, "black")
     posn = ((device.width - logo.width) // 2, 0)
 
     while True:
-        for angle in range(0, 360, 2):
-            rot = logo.rotate(angle, resample=Image.BILINEAR)
+            rot = logo.rotate(0, resample=Image.BILINEAR)
             img = Image.composite(rot, fff, rot)
             background.paste(img, posn)
             device.display(background.convert(device.mode))
