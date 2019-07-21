@@ -1,8 +1,7 @@
-from luma.core.interface.serial import i2c
-from luma.oled.device import sh1106
 from luma.core.render import canvas
 from PIL import ImageFont
 import time
+from oled_setting import get_device
 
 
 def stats(oled, content):
@@ -12,14 +11,12 @@ def stats(oled, content):
 
 
 def main():
-    serial = i2c(port=1, address=0x3C)
-    oled = sh1106(serial)
+    device = get_device()
     while True:
         localtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        stats(oled, localtime)
+        stats(device, localtime)
         time.sleep(1)
 
 
 if __name__ == "__main__":
     main()
-

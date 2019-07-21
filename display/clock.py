@@ -14,8 +14,7 @@ import math
 import time
 import datetime
 from luma.core.render import canvas
-from luma.oled.device import sh1106
-from luma.core.interface.serial import i2c
+import oled_setting
 
 
 def posn(angle, arm_length):
@@ -66,8 +65,7 @@ def main():
 
 if __name__ == "__main__":
     try:
-        serial = i2c(port=1, address=0x3C)
-        device = sh1106(serial)
+        device = oled_setting.get_device()
         main()
     except KeyboardInterrupt:
         pass
