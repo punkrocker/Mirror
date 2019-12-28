@@ -1,30 +1,32 @@
 from bluepy.btle import Scanner, DefaultDelegate, Peripheral
 
-
-class ScanDelegate(DefaultDelegate):
-    def __init__(self):
-        DefaultDelegate.__init__(self)
-
-    def handleDiscovery(self, dev, isNewDev, isNewData):
-        if isNewDev:
-            print("Discovered device", dev.addr)
-        elif isNewData:
-            print("Received new data from", dev.addr)
+light_mac = "b4:99:4c:60:94:42"
+yeelight_name = "Yeelight Blue II"
 
 
 def scan_devices():
-    scanner = Scanner().withDelegate(ScanDelegate())
+    scanner = Scanner()
     devices = scanner.scan(10.0)
     for dev in devices:
-        print("Device %s (%s), RSSI=%d dB" % (dev.addr, dev.addrType, dev.rssi))
-        for (adtype, desc, value) in dev.getScanData():
-            print("  %s = %s" % (desc, value))
+        name = dev.getValueText(0x09)
+        if name == yeelight_name:
+            print("Device %s (%s), RSSI=%d dB" % (dev.addr, dev.addrType, dev.rssi))
+            return dev
 
 
-if __name__ == '__main__':
-    p = Peripheral("b4:99:4c:60:94:42")
+def get_services():
+    p = Peripheral(light_mac)
     services = p.getServices()
-
     # displays all services
     for service in services:
         print(service)
+    characteristics = p.getCharacteristics()
+    print("Handle   UUID                                Properties")
+    print("-------------------------------------------------------")
+    for ch in characteristics:
+        print("  0x" + format(ch.getHandle(), '02X') + "   " + str(ch.uuid) + " " + ch.propertiesToString())
+
+
+if __name__ == '__main__':
+    scan_devices()
+    # get_services()
