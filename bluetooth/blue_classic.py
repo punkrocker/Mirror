@@ -1,17 +1,25 @@
 import bluetooth
 
-nearby_devices = bluetooth.discover_devices(lookup_names=True)
-for addr, name in nearby_devices:
-    print("  %s - %s" % (addr, name))
 
-    services = bluetooth.find_service(address=addr)
-    for svc in services:
-        print("Service Name: %s" % svc["name"])
-        print("    Host:        %s" % svc["host"])
-        print("    Description: %s" % svc["description"])
-        print("    Provided By: %s" % svc["provider"])
-        print("    Protocol:    %s" % svc["protocol"])
-        print("    channel/PSM: %s" % svc["port"])
-        print("    svc classes: %s " % svc["service-classes"])
-        print("    profiles:    %s " % svc["profiles"])
-        print("    service id:  %s " % svc["service-id"])
+# 返回地址和设备名
+def scan_devices():
+    nearby_devices = bluetooth.discover_devices(lookup_names=True)
+    return nearby_devices
+
+
+def scan_service(dev_addr):
+    return bluetooth.find_service(address=dev_addr)
+
+
+def connect(bd_addr):
+    port = 1
+    sock = bluetooth.BluetoothSocket(bluetooth.AUDIO_SINK_CLASS)
+    sock.connect((bd_addr, port))
+    sock.send("hello!!")
+    sock.close()
+
+
+if __name__ == '__main__':
+    mac = "F8:A7:5A:DC:72:72"
+    connect(mac)
+
