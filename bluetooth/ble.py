@@ -1,6 +1,5 @@
 from bluepy.btle import Scanner, DefaultDelegate, Peripheral
 
-light_mac = "b4:99:4c:60:94:42"
 yeelight_name = "Yeelight Blue II"
 
 
@@ -14,8 +13,8 @@ def scan_devices():
             return dev
 
 
-def get_services():
-    p = Peripheral(light_mac)
+def get_services(mac):
+    p = Peripheral(mac)
     services = p.getServices()
     # displays all services
     for service in services:
@@ -28,5 +27,5 @@ def get_services():
 
 
 if __name__ == '__main__':
-    scan_devices()
-    # get_services()
+    light = scan_devices()
+    get_services(light.addr)
