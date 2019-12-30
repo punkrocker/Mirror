@@ -1,4 +1,4 @@
-from bluepy.btle import Scanner, DefaultDelegate, Peripheral
+from bluepy.btle import Scanner, UUID, Peripheral
 
 yeelight_name = "Yeelight Blue II"
 
@@ -22,8 +22,19 @@ def get_services(mac):
     characteristics = p.getCharacteristics()
     print("Handle   UUID                                Properties")
     print("-------------------------------------------------------")
-    for ch in characteristics:
-        print("  0x" + format(ch.getHandle(), '02X') + "   " + str(ch.uuid) + " " + ch.propertiesToString())
+    for characteristic in characteristics:
+        if characteristic.supportsRead():
+            print(str(characteristic))
+            print(characteristic.uuid)
+            print(UUID(characteristic.uuid).getCommonName())
+            # val = characteristic.read()
+            # if UUID(characteristic.uuid).getCommonName() == "Battery Level":
+            #     print("battery level is " + str(ord(val)))
+            # else:
+            #     print(val)
+            print(str(characteristic.properties) + "\n")
+        print("========End of characters=========\n")
+    print("--------------------------------------------------------")
 
 
 if __name__ == '__main__':
