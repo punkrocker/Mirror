@@ -1,4 +1,5 @@
 from bluepy.btle import Scanner, UUID, Peripheral
+import struct
 
 yeelight_name = "Yeelight Blue II"
 
@@ -23,20 +24,16 @@ def get_services(mac):
     print("Handle   UUID                                Properties")
     print("-------------------------------------------------------")
     for characteristic in characteristics:
+        print("  0x" + format(characteristic.getHandle(), '02X') + "   " + str(
+            characteristic.uuid) + " " + characteristic.propertiesToString())
         if characteristic.supportsRead():
-            print(str(characteristic))
-            print(characteristic.uuid)
-            print(UUID(characteristic.uuid).getCommonName())
-            # val = characteristic.read()
-            # if UUID(characteristic.uuid).getCommonName() == "Battery Level":
-            #     print("battery level is " + str(ord(val)))
-            # else:
-            #     print(val)
-            print(str(characteristic.properties) + "\n")
-        print("========End of characters=========\n")
+            val = characteristic.read()
+            print(val)
+        if str(characteristic.uuid) == "0000fff1-0000-1000-8000-00805f9b34fb":
+            characteristic.write(struct.pack('<B', 3))
     print("--------------------------------------------------------")
 
 
 if __name__ == '__main__':
     light = scan_devices()
-    get_services(light.addr)
+    get_services(light)
