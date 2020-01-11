@@ -1,5 +1,7 @@
 from aip import AipSpeech
-import os
+import sys
+sys.path.append('../light')
+from yeelight_wifi import *
 
 ''' 你的APPID AK SK  参数在申请的百度云语音服务的控制台查看'''
 APP_ID = '16301424'
@@ -26,7 +28,8 @@ def stt(filename):  # 语音识别
     # 解析返回值，打印语音识别的结果
     if result['err_msg'] == 'success.':
         word = result['result'][0]
-        print(word)
+        if ('开灯' in word):
+            turn_on()
     else:
         print("错误")
 
