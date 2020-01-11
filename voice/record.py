@@ -1,12 +1,10 @@
 import pyaudio
 import wave
-import os
-import sys
 
 CHUNK = 512
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
-RATE = 44100
+RATE = 16000
 RECORD_SECONDS = 5
 WAVE_OUTPUT_FILENAME = "output.wav"
 
@@ -38,3 +36,7 @@ wf.setsampwidth(p.get_sample_size(FORMAT))
 wf.setframerate(RATE)
 wf.writeframes(b''.join(frames))
 wf.close()
+
+from voice_to_text import *
+
+stt('output.wav')
