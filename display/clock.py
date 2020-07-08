@@ -1,71 +1,45 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# Copyright (c) 2014-18 Richard Hull and contributors
-# See LICENSE.rst for details.
-# PYTHON_ARGCOMPLETE_OK
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
 
-"""
-An analog clockface with date & time.
-Ported from:
-https://gist.github.com/TheRayTracer/dd12c498e3ecb9b8b47f#file-clock-py
-"""
-
-import math
+import sh1106 as SH1106
 import time
 import datetime
-from luma.core.render import canvas
-import oled_setting
 
+from PIL import Image, ImageDraw, ImageFont
 
-def posn(angle, arm_length):
-    dx = int(math.cos(math.radians(angle)) * arm_length)
-    dy = int(math.sin(math.radians(angle)) * arm_length)
-    return (dx, dy)
+try:
+    disp = SH1106.SH1106()
 
+    print("\r1.3inch OLED")
+    # Initialize library.
+    disp.Init()
+    # Clear display.
+    disp.clear()
 
-def main():
+    # Create blank image for drawing.
+    font = ImageFont.truetype('Font.ttf', 20)
+    font10 = ImageFont.truetype('Font.ttf', 13)
     today_last_time = "Unknown"
     while True:
+        image1 = Image.new('1', (disp.width, disp.height), "WHITE")
+        draw = ImageDraw.Draw(image1)
+        draw.line([(0, 0), (127, 0)], fill=0)
+        draw.line([(0, 0), (0, 63)], fill=0)
+        draw.line([(0, 63), (127, 63)], fill=0)
+        draw.line([(127, 0), (127, 63)], fill=0)
         now = datetime.datetime.now()
         today_date = now.strftime("%d %b %y")
         today_time = now.strftime("%H:%M:%S")
         if today_time != today_last_time:
             today_last_time = today_time
-            with canvas(device) as draw:
-                now = datetime.datetime.now()
-                today_date = now.strftime("%d %b %y")
-
-                margin = 4
-
-                cx = 30
-                cy = min(device.height, 64) / 2
-
-                left = cx - cy
-                right = cx + cy
-
-                hrs_angle = 270 + (30 * (now.hour + (now.minute / 60.0)))
-                hrs = posn(hrs_angle, cy - margin - 7)
-
-                min_angle = 270 + (6 * now.minute)
-                mins = posn(min_angle, cy - margin - 2)
-
-                sec_angle = 270 + (6 * now.second)
-                secs = posn(sec_angle, cy - margin - 2)
-
-                draw.ellipse((left + margin, margin, right - margin, min(device.height, 64) - margin), outline="white")
-                draw.line((cx, cy, cx + hrs[0], cy + hrs[1]), fill="white")
-                draw.line((cx, cy, cx + mins[0], cy + mins[1]), fill="white")
-                draw.line((cx, cy, cx + secs[0], cy + secs[1]), fill="red")
-                draw.ellipse((cx - 2, cy - 2, cx + 2, cy + 2), fill="white", outline="white")
-                draw.text((2 * (cx + margin), cy - 8), today_date, fill="yellow")
-                draw.text((2 * (cx + margin), cy), today_time, fill="yellow")
-
+            draw.text((30, 0), today_date, font=font10, fill=0)
+            draw.text((28, 20), today_time, font=font, fill=0)
+            disp.ShowImage(disp.getbuffer(image1))
         time.sleep(0.1)
 
+except IOError as e:
+    print(e)
 
-if __name__ == "__main__":
-    try:
-        device = oled_setting.get_device()
-        main()
-    except KeyboardInterrupt:
-        pass
+except KeyboardInterrupt:
+    print("ctrl + c:")
+    exit()
