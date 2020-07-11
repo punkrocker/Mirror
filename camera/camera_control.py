@@ -13,15 +13,15 @@ try:
     is_up = False
     is_right = False
     while True:
-        # if is_up:
-        #     y += 1
-        # else:
-        #     y -= 1
-        # if y >= 80:
-        #     is_up = False
-        # elif y <= 10:
-        #     is_up = True
-        # pwm.setRotationAngle(0, y)
+        if is_up:
+            y += 1
+        else:
+            y -= 1
+        if y >= 80:
+            is_up = False
+        elif y <= 10:
+            is_up = True
+        pwm.setRotationAngle(0, y)
 
         if is_right:
             x += 1
@@ -32,7 +32,7 @@ try:
         elif x <= 10:
             is_right = True
         pwm.setRotationAngle(1, x)
-
+        print(str(x) + ":" + str(y))
         time.sleep(0.1)
 
 
